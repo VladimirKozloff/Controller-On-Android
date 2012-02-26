@@ -5,6 +5,7 @@ public class GlobalVars
 	public String[] KeysNames;
 	public int[] KeysIntId;
 	public static int userchoice=0;
+
 	public GlobalVars()
 	{
 		KeysNames = new String[117];
@@ -130,5 +131,9 @@ public class GlobalVars
 	public CharSequence GetKeyName(int position)
 	{
 		return KeysNames[position];
+	}
+	public int GetKeyId(int position)
+	{
+		return KeysIntId[position];
 	}
 }
