@@ -36,7 +36,6 @@ public class Controller extends Activity
 		Intent intent = new Intent(this, IntefaceCreater.class);
 		startActivity(intent);
 	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		//CharSequence message;
@@ -45,7 +44,8 @@ public class Controller extends Activity
 				showInterfaceActivity();
 				break;
 			case IDM_EXIT:
-				super.finish();
+				super.onDestroy();
+		        android.os.Process.killProcess(android.os.Process.myPid());
 				break;
 			case IDM_ABOUT: {
 				AlertDialog alertDialog;
@@ -75,6 +75,7 @@ public class Controller extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// добавляем пункты меню
+
 		menu.add(Menu.NONE, IDM_CREATE, Menu.NONE, "Create interface");
 		menu.add(Menu.NONE, IDM_EXIT, Menu.NONE, "Exit");
 		menu.add(Menu.NONE, IDM_ABOUT, Menu.NONE, "About ?");

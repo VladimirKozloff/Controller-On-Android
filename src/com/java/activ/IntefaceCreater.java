@@ -1,6 +1,10 @@
 package com.java.activ;
 
 
+
+
+import java.io.IOException;
+
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.options.EngineOptions;
@@ -13,8 +17,11 @@ import org.anddev.andengine.entity.scene.menu.MenuScene;
 import org.anddev.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.anddev.andengine.entity.scene.menu.item.IMenuItem;
 import org.anddev.andengine.entity.sprite.Sprite;
+import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.input.touch.TouchEvent;
+import org.anddev.andengine.opengl.font.Font;
+import org.anddev.andengine.opengl.font.FontFactory;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -23,6 +30,7 @@ import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -41,6 +49,7 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 	public static final int Camera_height = 480;
 	public static Scene mMainScene;
 
+	public Font font_mvboli22;
 	private BitmapTextureAtlas mBitmapTextureAtlas;
 	private TextureRegion mBackGr;
 	private TextureRegion[] ButtonsImage = new TextureRegion[10];
@@ -49,14 +58,15 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 	public int choisenbutton;
 	public int ScaleId;
 
-
 	private static final int IDM_SAVE = 201;
 	private static final int IDM_BACK = 202;
 	private static final int IDM_LOAD = 203;
 	private static final int IDM_NEW = 204;
 	private GlobalVars ggg = new GlobalVars();
-	private ButtonArray buttoncollection=new ButtonArray();
+	private ButtonArray buttoncollection = new ButtonArray();
+	public  ButtonRepresentation tmp;
 
+	// ////////////////////////////////////////////////////////////////////////////////
 
 	public void onCreate(Bundle savedInstanceState) {
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -68,8 +78,10 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 		super.onCreate(savedInstanceState);
 		x.setText("This will be something that help you to crete the interface!");
 		//setContentView(x);
+
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public Engine onLoadEngine() {
 		mCamera = new Camera(0, 0, Camera_width, Camera_height);
@@ -77,12 +89,13 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 			new RatioResolutionPolicy(Camera_width, Camera_height), mCamera).setNeedsMusic(true));
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------------------------------------------------------------------
 	private void showListActivity() {
 		Intent intent = new Intent(this, ListAct.class);
 		startActivity(intent);
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		CharSequence message;
@@ -97,11 +110,9 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 				break;
 			case IDM_SAVE:
 				message = "Save!";
-				showListActivity();
 				break;
 			case IDM_LOAD: {
-				int a = GlobalVars.userchoice;
-				message = "Laod!" + a;
+				message = "Load!";
 				break;
 			}
 			case IDM_BACK: {
@@ -117,6 +128,7 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(Menu.NONE, IDM_SAVE, Menu.NONE, "Save interface");
@@ -142,15 +154,24 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 		ButtonsImage[3] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
 			this.mBitmapTextureAtlas, this, "rbg.png", 820, 600);
 		ButtonsImage[4] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-			this.mBitmapTextureAtlas, this, "hk.png", 820, 700);
+			this.mBitmapTextureAtlas, this, "zoom.png", 820, 700);
 		ButtonsImage[5] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
-			this.mBitmapTextureAtlas, this, "bk.png", 820, 800);
+			this.mBitmapTextureAtlas, this, "hk.png", 820, 800);
 		ButtonsImage[6] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(
 			this.mBitmapTextureAtlas, this, "c1.png", 820, 900);
 
+		BitmapTextureAtlas font_mvboli22_Texture = new BitmapTextureAtlas(512, 32,
+			TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		font_mvboli22 = FontFactory.createFromAsset(font_mvboli22_Texture, this, "fonts/times.ttf",
+			22, true, Color.WHITE);
+		this.mEngine.getTextureManager().loadTextures(font_mvboli22_Texture);
+		this.mEngine.getFontManager().loadFonts(font_mvboli22);
+
 		this.mEngine.getTextureManager().loadTexture(this.mBitmapTextureAtlas);
+
 	}
 
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public Scene onLoadScene() {
 		this.mEngine.registerUpdateHandler(new FPSLogger());
@@ -210,6 +231,8 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 				return true;
 			}
 		};
+
+
 		ButtinsSprite[2] = new Sprite(310, 20, ButtonsImage[2]) {
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
@@ -341,49 +364,70 @@ public class IntefaceCreater extends BaseGameActivity implements IOnSceneTouchLi
 		}
 		return mMainScene;
 	}
+
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void onLoadComplete() {
 	}
-
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
 		float pMenuItemLocalX, float pMenuItemLocalY) {
 		return false;
 	}
-
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-		// TODO Auto-generated method stub
 		if (pSceneTouchEvent.getY() < 150)
 			return false;
 		if ((choisenbutton != 0) && (choisenbutton < 5)) {
-			Sprite btt1 = new Sprite(pSceneTouchEvent.getX(), pSceneTouchEvent.getY(),
-				ButtonsImage[choisenbutton - 1]);
-			btt1.setHeight((float) (btt1.getHeight() * 2));
-			btt1.setWidth((float) (btt1.getWidth() * 2));
-			ButtonRepresentation tmp = new ButtonRepresentation();
+
+			tmp = new ButtonRepresentation();
 			tmp.Xcordinate = pSceneTouchEvent.getX();
 			tmp.Ycordinate = pSceneTouchEvent.getY();
-			tmp.Width_Xlen = btt1.getWidth();
-			tmp.Length_Ylen = btt1.getHeight();
-			tmp.simage = btt1;
-			tmp.ButtonType=choisenbutton;
-			showListActivity();
+			tmp.Width_Xlen = ButtonsImage[choisenbutton-1].getWidth();
+			tmp.Length_Ylen = ButtonsImage[choisenbutton-1].getHeight();
+			tmp.scalekoff = 0;
+			tmp.ButtonType = choisenbutton;
+			//showListActivity();
 			tmp.KeyID = ggg.GetKeyId(GlobalVars.userchoice);
 			tmp.Keyneme = (String) ggg.GetKeyName(GlobalVars.userchoice);
+			tmp.simage=new Sprite(tmp.Xcordinate, tmp.Ycordinate,
+				ButtonsImage[tmp.ButtonType - 1]);
 			buttoncollection.AddButton(tmp);
-			mMainScene.attachChild(btt1);
+			mMainScene.attachChild(tmp.simage);
 			return false;
 		}
 		if ((choisenbutton != 0) && (choisenbutton == 7)) {
-			int a=buttoncollection.Serchposition(pSceneTouchEvent.getX(),
-				pSceneTouchEvent.getY());
-			Toast toast = Toast.makeText(this, buttoncollection.numberofelements+"  "+a, Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-			ButtonRepresentation tmp = buttoncollection.PopButton(a);
+			int a = buttoncollection
+				.Serchposition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+			if (a < 0)
+				return false;
+			tmp = buttoncollection.PopButton(a);
 			if (tmp != null)
-				mMainScene.detachChild(tmp.simage);
+			{
+				 this.runOnUpdateThread(new Runnable() {
+                     @Override
+                     public void run() {
+                             mMainScene.detachChild(IntefaceCreater.this.tmp.simage);
+                     }
+             });
+			}
+			return false;
+		}
+		if ((choisenbutton != 0) && (choisenbutton == 5)) {
+			int a = buttoncollection
+				.Serchposition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+			if (a < 0)
+				return false;
+			mMainScene.detachChild(ButtonArray.allbuttons[a].simage);
+			ButtonArray.allbuttons[a].scalekoff = ((ButtonArray.allbuttons[a].scalekoff + 1) % 8);
+			ButtonArray.allbuttons[a].simage
+				.setScale(1 + ((float) ButtonArray.allbuttons[a].scalekoff) / 6);
+			tmp = ButtonArray.allbuttons[a];
+			mMainScene.attachChild(ButtonArray.allbuttons[a].simage);
+			//float newXlen = (float) (ButtonArray.allbuttons[a].simage.getInitialX() * (1 + ((float) ButtonArray.allbuttons[a].scalekoff) / 6));
+			//float newYlen = (float) (ButtonArray.allbuttons[a].simage.getInitialY() * (1 + ((float) ButtonArray.allbuttons[a].scalekoff) / 6));
 		}
 		return false;
 	}
